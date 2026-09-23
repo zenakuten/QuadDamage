@@ -11,8 +11,6 @@ Add `QuadDamage.MutQuadDamage` to the server's mutator list. For authored maps, 
 `QuadDamage.QuadDamageCharger`. Each charger exposes `QuadDamage -> RespawnTime` in
 UnrealEd and defaults to the stock UDamage interval of 90 seconds.
 
-Servers must make `QuadDamage.u` available to clients.
-
 ## Configuration
 
 `System/QuadDamage.ini`:
