@@ -11,6 +11,10 @@ var() float QuadDamageDuration;
 var() sound WorldPickupSound;
 var() float QuadSoundVolume;
 var() float QuadSoundRadius;
+var() sound DeniedSound;
+
+var Pawn LastDeniedPawn;
+var float LastDeniedTime;
 
 function float GetAdrenalineCost()
 {
@@ -24,6 +28,26 @@ function bool CanAffordQuadDamage(Pawn P)
     AdrenalineCost = GetAdrenalineCost();
     return AdrenalineCost <= 0.0
         || (P.Controller != None && P.Controller.Adrenaline >= AdrenalineCost);
+}
+
+function DenyQuadDamage(Pawn P)
+{
+    local PlayerController PC;
+
+    PC = PlayerController(P.Controller);
+    if (PC == None)
+        return;
+
+    // Touch refires every time the player lands on the base; one notice per second
+    if (P == LastDeniedPawn && Level.TimeSeconds - LastDeniedTime < 1.0)
+        return;
+
+    LastDeniedPawn = P;
+    LastDeniedTime = Level.TimeSeconds;
+
+    PC.ClientPlaySound(DeniedSound);
+    PC.ClientMessage("You need " $ int(GetAdrenalineCost())
+        $ " adrenaline to use Quad Damage!");
 }
 
 function float BotDesireability(Pawn Bot)
@@ -153,7 +177,10 @@ auto state Pickup
         {
             P = Pawn(Other);
             if (!CanAffordQuadDamage(P))
+            {
+                DenyQuadDamage(P);
                 return;
+            }
 
             if (GetAdrenalineCost() > 0.0)
                 P.Controller.Adrenaline = FMax(
@@ -173,6 +200,7 @@ defaultproperties
     WorldPickupSound=Sound'QuadDamage.quadramix2'
     QuadSoundVolume=2.000000
     QuadSoundRadius=1500.000000
+    DeniedSound=Sound'MenuSounds.denied1'
     PickupMessage="QUAD DAMAGE!"
     PickupSound=Sound'QuadDamage.quadramix2'
     StaticMesh=StaticMesh'QuadDamage.QuadDamage'
