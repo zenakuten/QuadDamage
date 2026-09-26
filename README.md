@@ -3,7 +3,8 @@
 ![Quad Damage pickup](QuadDamage.png)
 
 QuadDamage adds a true 4x damage pickup and a mutator that replaces stock Double
-Damage pickups. 
+Damage pickups. Its damage rule runs before downstream game rules, so it works with
+stock weapons and WSUTComp/NewNet damage indicators.
 
 ## Use
 

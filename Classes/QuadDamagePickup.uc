@@ -61,6 +61,7 @@ function float BotDesireability(Pawn Bot)
 event PostBeginPlay()
 {
     local GameRules Rules;
+    local QuadDamageRules QuadRules;
 
     Super.PostBeginPlay();
 
@@ -75,7 +76,12 @@ event PostBeginPlay()
             return;
     }
 
-    Level.Game.AddGameModifier(Spawn(class'QuadDamageRules'));
+    QuadRules = Spawn(class'QuadDamageRules');
+    if (QuadRules != None)
+    {
+        QuadRules.NextGameRules = Level.Game.GameRulesModifiers;
+        Level.Game.GameRulesModifiers = QuadRules;
+    }
 }
 
 static function StaticPrecache(LevelInfo L)

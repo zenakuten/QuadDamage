@@ -27,8 +27,11 @@ function int NetDamage(
     out vector Momentum,
     class<DamageType> DamageType)
 {
+    if (HasQuadDamage(InstigatedBy))
+        Damage *= 2;
+
     if (NextGameRules != None)
-        Damage = NextGameRules.NetDamage(
+        return NextGameRules.NetDamage(
             OriginalDamage,
             Damage,
             Injured,
@@ -36,9 +39,6 @@ function int NetDamage(
             HitLocation,
             Momentum,
             DamageType);
-
-    if (HasQuadDamage(InstigatedBy))
-        Damage *= 2;
 
     return Damage;
 }
